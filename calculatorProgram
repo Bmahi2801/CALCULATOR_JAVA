@@ -1,0 +1,68 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class CustomCalculator extends JFrame implements ActionListener {
+    private JTextField textField;  // Display area for the calculator
+    private double firstNumber = 0, secondNumber = 0, calcResult = 0;  // Variables to store the numbers and result
+    private char mathOperator;  // Operator for the calculation
+
+    public CustomCalculator() {
+        setTitle("Custom Calculator");
+        setSize(300, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        textField = new JTextField();
+        textField.setEditable(false);  // Disable editing directly on the text field
+        add(textField, BorderLayout.NORTH);
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridLayout(4, 4));
+
+        String[] buttonTexts = {
+                "7", "8", "9", "/",
+                "4", "5", "6", "*",
+                "1", "2", "3", "-",
+                "0", ".", "=", "+"
+        };
+
+        for (String text : buttonTexts) {
+            JButton button = new JButton(text);
+            button.addActionListener(this);  // Add action listener to each button
+            buttonPanel.add(button);
+        }
+
+        add(buttonPanel);
+
+        setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent event) {
+        String actionCommand = event.getActionCommand();
+
+        if ((actionCommand.charAt(0) >= '0' && actionCommand.charAt(0) <= '9') || actionCommand.equals(".")) {
+            textField.setText(textField.getText() + actionCommand);
+        } else if (actionCommand.charAt(0) == '=') {
+            secondNumber = Double.parseDouble(textField.getText());
+            switch (mathOperator) {
+                case '+' -> calcResult = firstNumber + secondNumber;
+                case '-' -> calcResult = firstNumber - secondNumber;
+                case '*' -> calcResult = firstNumber * secondNumber;
+                case '/' -> calcResult = firstNumber / secondNumber;
+            }
+            textField.setText(String.valueOf(calcResult));
+            firstNumber = calcResult;
+        } else {
+            mathOperator = actionCommand.charAt(0);
+            firstNumber = Double.parseDouble(textField.getText());
+            textField.setText("");
+        }
+    }
+
+    public static void main(String[] args) {
+        new CustomCalculator();
+    }
+}
